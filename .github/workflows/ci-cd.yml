@@ -1,3 +1,12 @@
+# CI/CD pipeline.
+#
+# Two jobs, in order:
+#   1. test   - fast feedback: typecheck, unit tests, production build.
+#   2. docker - builds the real image, smoke-tests the running container, and publishes it
+#               to GHCR only on pushes to main (pull requests build and test but never publish).
+#
+# Branch protection on `main` requires BOTH checks (`test` and `docker`), so a PR cannot be merged
+# unless the unit tests pass AND the container actually works.
 name: CI/CD
 
 on:
@@ -7,16 +16,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Cancel superseded runs of the same branch/PR.
+# A newer push to the same branch/PR cancels the older run (saves minutes, avoids stale results).
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Least privilege by default; the docker job raises it only where needed.
 permissions:
   contents: read
 
 jobs:
-  # CI: typecheck, unit tests and production build on every push and PR.
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,8 +33,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+          cache: npm # caches ~/.npm keyed on package-lock.json
+      - run: npm ci # exact versions from the lockfile
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
@@ -35,16 +44,34 @@ jobs:
           path: dist
           retention-days: 7
 
-  # CD: build the Nginx image on every run; publish it to GHCR only on pushes to main.
   docker:
-    needs: test
+    needs: test # do not spend time building an image from code whose tests fail
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
+      packages: write # needed to push to ghcr.io with the built-in GITHUB_TOKEN
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4 # the smoke test runs a tiny Node mock of the API on the runner
+        with:
+          node-version: 22
       - uses: docker/setup-buildx-action@v3
+
+      # Step 1: build the image locally (not pushed) so it can be smoke-tested first.
+      - name: Build image for smoke test
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true # make the image available to `docker run` on this runner
+          tags: market-data-web:smoke
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Step 2: run the container against a fake API and probe it with curl (see smoke/smoke-test.sh).
+      - name: Smoke test
+        run: ./smoke/smoke-test.sh market-data-web:smoke
+
+      # Step 3: publish, only after the smoke test passed and only from main.
       - name: Log in to GHCR
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -59,11 +86,12 @@ jobs:
           tags: |
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
-      - uses: docker/build-push-action@v6
+      - name: Build and push
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha # reuses the layers built in step 1, so this is fast
