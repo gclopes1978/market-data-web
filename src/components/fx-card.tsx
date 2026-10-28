@@ -10,7 +10,12 @@ import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 // Shared style for the native <select> elements.
 const selectClass = "h-9 rounded-lg border border-border bg-card px-2 text-sm";
 
-/** FX card: pick a currency pair, swap it, and see the rate plus its inverse. */
+/**
+ * FX card: pick a currency pair, swap it, and see the rate plus its inverse.
+ *
+ * Design note: the pair is part of the query key, so each pair is cached separately and swapping back
+ * is instant. The inverse rate is computed locally (1 / rate) instead of making a second API call.
+ */
 export function FxCard() {
   const [base, setBase] = useState("EUR");
   const [quote, setQuote] = useState("USD");
