@@ -1,0 +1,25 @@
+import type { ReactNode } from "react";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface Props<T> {
+  query: UseQueryResult<T>;
+  skeleton?: ReactNode;
+  children: (data: T) => ReactNode;
+}
+
+/** Renders loading, error (with retry) and success states of a query. */
+export function Async<T>({ query, skeleton, children }: Props<T>) {
+  if (query.isPending) return <>{skeleton ?? <Skeleton className="h-16 w-full" />}</>;
+  if (query.isError) {
+    return (
+      <p role="alert" className="text-sm text-down">
+        Não foi possível carregar os dados ({query.error.message}).{" "}
+        <button onClick={() => query.refetch()} className="underline">
+          Tentar de novo
+        </button>
+      </p>
+    );
+  }
+  return <>{children(query.data)}</>;
+}

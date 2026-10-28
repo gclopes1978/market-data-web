@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-up: var(--up);
+  --color-down: var(--down);
+}
+:root {
+  --background: #f3f5f4; --foreground: #10201c; --card: #ffffff; --muted: #e8edeb;
+  --muted-foreground: #5b6b66; --border: #dce3e0; --primary: #0f766e; --up: #15803d; --down: #b91c1c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c1512; --foreground: #e6efec; --card: #121e1a; --muted: #1a2a25;
+    --muted-foreground: #8ea39c; --border: #223530; --primary: #2dd4bf; --up: #4ade80; --down: #f87171;
+  }
+}
+body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
