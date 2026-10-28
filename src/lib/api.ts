@@ -1,3 +1,7 @@
+// Design note: every URL below is relative ("/api/..."), i.e. same-origin.
+// - In development Vite proxies /api and /health to the API (see vite.config.ts).
+// - In production Nginx does the same (see nginx/default.conf.template).
+// So the frontend never hard-codes a host or port, and the browser never needs CORS.
 import type { Bond, Commodity, Envelope, Euribor, FxRate, Stock } from "./types";
 
 /** Error thrown when the API answers with a non-2xx status; keeps the HTTP status code. */

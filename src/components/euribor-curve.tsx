@@ -7,7 +7,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 // SVG geometry (viewBox units): canvas size, horizontal padding and vertical margins.
 const W = 600, H = 220, PAD_X = 50, TOP = 40, BOTTOM = 40;
 
-/** Hero card: draws the Euribor term structure (1M-12M) as a responsive SVG line chart. */
+/**
+ * Hero card: draws the Euribor term structure (1M-12M) as a responsive SVG line chart.
+ *
+ * Design notes:
+ * - The API returns one tenor per call, so we fire four queries in parallel with useQueries and
+ *   only draw when all of them are ready (a partial curve would be misleading).
+ * - The chart is plain SVG instead of a chart library: there are only four points, and it saves
+ *   a dependency and ~100 kB of JavaScript. It uses CSS variables, so it follows light/dark mode.
+ */
 export function EuriborCurve() {
   // One query per tenor, fetched in parallel. Euribor is a monthly average, so it is cached for an hour.
   const results = useQueries({

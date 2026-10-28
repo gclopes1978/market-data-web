@@ -1,4 +1,12 @@
-# API_UPSTREAM is injected at container start (nginx image envsubst on /etc/nginx/templates).
+# Nginx has two jobs here:
+#   1. serve the static React build;
+#   2. reverse-proxy /api and /health to the Market Data API.
+# Because the browser only ever calls the same origin, there is no CORS to configure and the
+# frontend does not need to know where the API lives. That is decided at deploy time by API_UPSTREAM.
+#
+# ${API_UPSTREAM} is substituted by the nginx image's envsubst at container start. Nginx's own
+# variables ($host, $uri...) are left alone because envsubst only replaces variables that are defined
+# in the environment.
 server {
   listen 80;
   root /usr/share/nginx/html;
@@ -7,6 +15,7 @@ server {
   gzip on;
   gzip_types text/css application/javascript application/json image/svg+xml;
 
+  # No trailing slash/URI in proxy_pass, so the original request path is forwarded unchanged.
   location /api/ {
     proxy_pass ${API_UPSTREAM};
     proxy_set_header Host $host;
@@ -14,17 +23,19 @@ server {
     proxy_read_timeout 30s;
   }
 
+  # Used by the dashboard's status badge.
   location = /health {
     proxy_pass ${API_UPSTREAM};
   }
 
+  # Vite emits content-hashed file names under /assets, so they can be cached "forever".
   location /assets/ {
     expires 1y;
     add_header Cache-Control "public, immutable";
     try_files $uri =404;
   }
 
-  # SPA fallback
+  # SPA fallback: unknown paths return index.html. no-cache makes sure a new deploy is picked up.
   location / {
     add_header Cache-Control "no-cache";
     try_files $uri /index.html;

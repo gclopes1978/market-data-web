@@ -1,3 +1,9 @@
+// Architecture overview
+// - Each card owns its data: it calls TanStack Query hooks directly, so cards load, refresh and fail
+//   independently (one slow or broken provider never blanks the whole page).
+// - Server state (cache, polling, retries) lives in TanStack Query; the only local React state is UI input
+//   (selected currencies, typed stock symbol).
+// - src/lib/api.ts is the single place that knows URLs and response shapes.
 import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCw } from "lucide-react";
 import { api } from "@/lib/api";

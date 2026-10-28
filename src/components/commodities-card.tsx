@@ -4,7 +4,12 @@ import { formatNumber } from "@/lib/format";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-/** Commodities list: one row per symbol; each row loads and fails independently. */
+/**
+ * Commodities list: one row per symbol; each row loads and fails independently.
+ *
+ * Design note: using one query per symbol (instead of one big request) means a failing symbol only
+ * affects its own row, and each row shows a skeleton until its own data arrives.
+ */
 export function CommoditiesCard() {
   // One query per commodity, refreshed every minute.
   const results = useQueries({

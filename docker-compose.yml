@@ -1,11 +1,14 @@
+# Runs the dashboard on http://localhost:8080.
+# The browser only talks to this container; Nginx forwards /api and /health to the real API.
 services:
   web:
     build: .
     ports:
       - "8080:80"
     environment:
-      # Default: API published on the host at :7013.
-      # If the API runs in the same compose network, use e.g. http://market-data-api:8080
+      # Default: the API is published on the host at :7013.
+      # If the API runs in the same compose network, use its service name, e.g. http://market-data-api:8080
       API_UPSTREAM: ${API_UPSTREAM:-http://host.docker.internal:7013}
     extra_hosts:
+      # Makes host.docker.internal resolve on Linux too (Docker Desktop already provides it).
       - "host.docker.internal:host-gateway"
