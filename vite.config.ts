@@ -8,7 +8,7 @@ const API = process.env.VITE_API_PROXY ?? "http://localhost:7013";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
+  resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
   server: { port: 5173, proxy: { "/api": API, "/health": API } },
   test: { environment: "jsdom", globals: true, setupFiles: "./src/test/setup.ts", css: false },
 });

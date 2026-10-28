@@ -9,14 +9,18 @@ import { EuriborCurve } from "@/components/euribor-curve";
 import { FxCard } from "@/components/fx-card";
 import { StockCard } from "@/components/stock-card";
 
+/** Badge showing whether the API answers /health (polled every 15s, no retries). */
 function ApiStatus() {
   const { isError, isPending } = useQuery({ queryKey: ["health"], queryFn: api.health, refetchInterval: 15_000, retry: false });
   if (isPending) return <Badge>A verificar API…</Badge>;
   return isError ? <Badge variant="down">API indisponível</Badge> : <Badge variant="up">API operacional</Badge>;
 }
 
+/** Dashboard shell: header (status + refresh) and the grid of data cards. */
 export default function App() {
+  // Used by the refresh button to invalidate every query at once.
   const client = useQueryClient();
+  // True while any query is loading; makes the refresh icon spin.
   const fetching = useIsFetching() > 0;
 
   return (

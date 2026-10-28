@@ -4,7 +4,9 @@ import { formatNumber } from "@/lib/format";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+/** Commodities list: one row per symbol; each row loads and fails independently. */
 export function CommoditiesCard() {
+  // One query per commodity, refreshed every minute.
   const results = useQueries({
     queries: COMMODITIES.map((s) => ({ queryKey: ["commodity", s], queryFn: () => api.commodity(s), refetchInterval: 60_000 })),
   });

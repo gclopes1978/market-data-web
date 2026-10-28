@@ -7,11 +7,14 @@ import { Async } from "@/components/async";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 
+// Shared style for the native <select> elements.
 const selectClass = "h-9 rounded-lg border border-border bg-card px-2 text-sm";
 
+/** FX card: pick a currency pair, swap it, and see the rate plus its inverse. */
 export function FxCard() {
   const [base, setBase] = useState("EUR");
   const [quote, setQuote] = useState("USD");
+  // Disabled when both currencies are equal (the API would reject that pair); refreshed every minute.
   const query = useQuery({
     queryKey: ["fx", base, quote],
     queryFn: () => api.fx(base, quote),

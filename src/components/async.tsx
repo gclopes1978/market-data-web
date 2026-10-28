@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
+/** `query` is any TanStack query result; `children` renders the loaded data. */
 interface Props<T> {
   query: UseQueryResult<T>;
   skeleton?: ReactNode;

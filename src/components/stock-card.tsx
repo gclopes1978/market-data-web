@@ -8,11 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 
+/** Stock card: look up any ticker symbol and see price, daily change and volume. */
 export function StockCard() {
   const [symbol, setSymbol] = useState("AAPL");
+  // `draft` is what the user is typing; `symbol` only changes on submit, so we don't fetch on every keystroke.
   const [draft, setDraft] = useState("AAPL");
   const query = useQuery({ queryKey: ["stock", symbol], queryFn: () => api.stock(symbol), refetchInterval: 60_000 });
 
+  // Normalizes the typed symbol to upper case and triggers the lookup.
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (draft.trim()) setSymbol(draft.trim().toUpperCase());

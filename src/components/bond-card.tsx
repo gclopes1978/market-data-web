@@ -4,6 +4,7 @@ import { formatDate, formatNumber } from "@/lib/format";
 import { Async } from "@/components/async";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 
+/** Bond card: US 5-year Treasury yield. The source is daily, so it is cached for an hour. */
 export function BondCard() {
   const query = useQuery({ queryKey: ["bond", "US", "US5Y"], queryFn: () => api.bond("US", "US5Y"), staleTime: 60 * 60_000 });
   return (
