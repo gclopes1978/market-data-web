@@ -9,7 +9,7 @@ export function BondCard() {
   const query = useQuery({ queryKey: ["bond", "US", "US5Y"], queryFn: () => api.bond("US", "US5Y"), staleTime: 60 * 60_000 });
   return (
     <Card>
-      <CardTitle>Obrigações do Tesouro dos EUA a 5 anos</CardTitle>
+      <CardTitle>US 5-year Treasury</CardTitle>
       <div className="mt-5">
         <Async query={query}>
           {({ data, metadata }) => (
@@ -18,7 +18,7 @@ export function BondCard() {
                 {data.yield != null ? `${formatNumber(data.yield)}%` : "—"}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Yield · preço {data.price != null ? formatNumber(data.price) : "indisponível"}
+                Yield · price {data.price != null ? formatNumber(data.price) : "unavailable"}
               </p>
               <CardFooter>{metadata.source} · {formatDate(metadata.asOf)}</CardFooter>
             </>

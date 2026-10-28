@@ -21,10 +21,9 @@ async function request(path: string): Promise<Response> {
 /** GET helper that parses the response body as JSON and types it as T. */
 const getJson = async <T,>(path: string) => (await request(path)).json() as Promise<T>;
 
-// Options offered by the UI: Euribor tenors, commodity symbols and FX currencies.
+// Options offered by the UI: Euribor tenors and commodity symbols (currencies live in currencies.ts).
 export const TENORS = ["1M", "3M", "6M", "12M"] as const;
 export const COMMODITIES = ["GOLD", "SILVER", "WTI", "BRENT", "NATGAS"] as const;
-export const CURRENCIES = ["EUR", "USD", "GBP", "CHF", "JPY"] as const;
 
 /** Typed client for the Market Data API: one method per endpoint. */
 export const api = {

@@ -42,31 +42,31 @@ describe("Dashboard", () => {
   it("renders data from every section", async () => {
     mockFetch();
     renderApp();
-    expect(await screen.findByText("API operacional")).toBeInTheDocument();
+    expect(await screen.findByText("API operational")).toBeInTheDocument();
     expect(await screen.findByText("Apple Inc.")).toBeInTheDocument();
     expect(await screen.findByText("Gold futures")).toBeInTheDocument();
-    expect(await screen.findByText("5,01%")).toBeInTheDocument();
-    expect(await screen.findByLabelText("Curva Euribor por prazo")).toBeInTheDocument();
+    expect(await screen.findByText("5.01%")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Euribor curve by tenor")).toBeInTheDocument();
   });
 
   it("shows an error with retry when a request fails", async () => {
     mockFetch({ "/api/stocks/AAPL": new Response("", { status: 500, statusText: "Server Error" }) });
     renderApp();
     expect(await screen.findByRole("alert")).toHaveTextContent("500 Server Error");
-    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
   it("looks up another stock symbol", async () => {
     mockFetch();
     renderApp();
-    await userEvent.clear(screen.getByLabelText("Símbolo"));
-    await userEvent.type(screen.getByLabelText("Símbolo"), "msft{enter}");
+    await userEvent.clear(screen.getByLabelText("Symbol"));
+    await userEvent.type(screen.getByLabelText("Symbol"), "msft{enter}");
     await waitFor(() => expect(fetch).toHaveBeenCalledWith("/api/stocks/MSFT"));
   });
 
   it("flags the API as unavailable", async () => {
     mockFetch({ "/health": new Response("", { status: 503 }) });
     renderApp();
-    expect(await screen.findByText("API indisponível")).toBeInTheDocument();
+    expect(await screen.findByText("API unavailable")).toBeInTheDocument();
   });
 });

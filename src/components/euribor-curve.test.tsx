@@ -20,11 +20,11 @@ describe("EuriborCurve", () => {
   it("plots every tenor with its rate", async () => {
     stubFetch(routes);
     renderWithClient(<EuriborCurve />);
-    expect(await screen.findByLabelText("Curva Euribor por prazo")).toBeInTheDocument();
-    for (const label of ["1M", "3M", "6M", "12M", "2,41%", "3,25%"]) {
+    expect(await screen.findByLabelText("Euribor curve by tenor")).toBeInTheDocument();
+    for (const label of ["1M", "3M", "6M", "12M", "2.41%", "3.25%"]) {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
-    expect(screen.getByText(/referente a/)).toBeInTheDocument();
+    expect(screen.getByText(/as of/)).toBeInTheDocument();
   });
 
   it("shows an error when a tenor fails", async () => {
