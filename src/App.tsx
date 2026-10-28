@@ -13,7 +13,7 @@ import { BondCard } from "@/components/bond-card";
 import { CommoditiesCard } from "@/components/commodities-card";
 import { EuriborCurve } from "@/components/euribor-curve";
 import { FxCard } from "@/components/fx-card";
-import { StockCard } from "@/components/stock-card";
+import { EquityCard } from "@/components/equity-card";
 
 /** Badge showing whether the API answers /health (polled every 15s, no retries). */
 function ApiStatus() {
@@ -46,7 +46,7 @@ export default function App() {
       <main className="grid gap-4 lg:grid-cols-3">
         <EuriborCurve />
         <FxCard />
-        <StockCard />
+        <EquityCard />
         <BondCard />
         <CommoditiesCard />
       </main>

@@ -14,7 +14,7 @@ const routes: Record<string, unknown> = {
   "/api/euribor/3M": euribor("3M", 2.63),
   "/api/euribor/6M": euribor("6M", 2.92),
   "/api/euribor/12M": euribor("12M", 3.25),
-  "/api/bonds/US/US5Y": { data: { identifier: "US5Y", market: "US", price: null, currency: "USD", yield: 5.01, maturityDate: null }, metadata: { source: "U.S. Treasury", asOf: "2026-10-01" } },
+  "/api/bonds/US/US10Y": { data: { identifier: "US5Y", market: "US", price: null, currency: "USD", yield: 5.01, maturityDate: null }, metadata: { source: "U.S. Treasury", asOf: "2026-10-01" } },
   "/api/stocks/AAPL": { data: { symbol: "AAPL", name: "Apple Inc.", price: 343.045, currency: "USD", changePercent: 1.04, volume: 3600565 }, metadata: { source: "Yahoo", asOf: "2026-10-27" } },
 };
 for (const [s, name, price] of [["GOLD", "Gold futures", 4039.8], ["SILVER", "Silver futures", 53.93], ["WTI", "WTI crude oil futures", 101.3], ["BRENT", "Brent crude oil futures", 110.38], ["NATGAS", "Natural gas futures", 2.972]] as const) {

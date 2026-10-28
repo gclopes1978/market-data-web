@@ -37,6 +37,8 @@ export const api = {
   bond: (market: string, id: string) => getJson<Envelope<Bond>>(`/api/bonds/${market}/${id}`),
   // GET /api/stocks/{symbol} -> last price, daily change and volume. Symbol is URL-encoded.
   stock: (symbol: string) => getJson<Envelope<Stock>>(`/api/stocks/${encodeURIComponent(symbol)}`),
+  // GET /api/etfs/{symbol} -> same payload as a stock; Yahoo Finance symbols (e.g. SPY, VWCE.DE).
+  etf: (symbol: string) => getJson<Envelope<Stock>>(`/api/etfs/${encodeURIComponent(symbol)}`),
   // GET /api/commodities/{symbol} -> futures price with its unit.
   commodity: (symbol: string) => getJson<Envelope<Commodity>>(`/api/commodities/${symbol}`),
 };
