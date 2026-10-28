@@ -12,7 +12,7 @@ export interface Bond {
   identifier: string; market: string; price: number | null; currency: string;
   yield: number | null; maturityDate: string | null;
 }
-/** Stock quote; changePercent is the daily change in percent. */
-export interface Stock { symbol: string; name: string; price: number; currency: string; changePercent: number; volume: number }
+/** Stock or ETF quote (same shape); the name can be missing for some listings; changePercent is the daily change in percent. */
+export interface Stock { symbol: string; name: string | null; price: number; currency: string; changePercent: number; volume: number }
 /** Commodity futures quote with the unit it is priced in. */
 export interface Commodity { symbol: string; name: string; price: number; currency: string; unit: string }
