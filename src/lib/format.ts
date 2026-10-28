@@ -1,5 +1,5 @@
-// All numbers and dates are rendered with European Portuguese conventions.
-const LOCALE = "pt-PT";
+// All numbers and dates are rendered with British English conventions (1,234.50).
+const LOCALE = "en-GB";
 
 /** Formats a number with a fixed number of decimals (default 2), e.g. 4039.8 -> "4039,80". */
 export const formatNumber = (n: number, digits = 2) =>

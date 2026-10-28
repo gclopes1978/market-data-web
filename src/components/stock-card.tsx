@@ -24,16 +24,16 @@ export function StockCard() {
 
   return (
     <Card>
-      <CardTitle>Ações</CardTitle>
+      <CardTitle>Stocks</CardTitle>
       <form onSubmit={submit} className="mt-3 flex gap-2">
         <input
-          aria-label="Símbolo"
+          aria-label="Symbol"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Símbolo, ex. MSFT"
+          placeholder="Symbol, e.g. MSFT"
           className="h-9 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-sm"
         />
-        <Button type="submit" variant="outline" size="icon" aria-label="Pesquisar">
+        <Button type="submit" variant="outline" size="icon" aria-label="Search">
           <Search className="size-4" />
         </Button>
       </form>

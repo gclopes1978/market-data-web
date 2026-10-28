@@ -18,6 +18,7 @@ Tests run during `docker build`; a failing test fails the image build.
 - **Same-origin API access.** The frontend calls relative URLs (`/api/...`). Vite (dev) and Nginx (prod) proxy them to the Market Data API, so there is no CORS and the API address is configured only by `API_UPSTREAM`.
 - **Independent cards.** Each card fetches its own data with TanStack Query (cache, polling, retry); one failing provider never breaks the page.
 - **Thin API layer.** `src/lib/api.ts` is the only file that knows endpoints and response types.
+- **All world currencies** in the FX card (`src/lib/currencies.ts`); pairs the data provider cannot quote show a friendly message.
 - **Plain SVG chart** for the Euribor curve (four points do not justify a chart library).
 
 ## CI/CD (`.github/workflows/ci-cd.yml`)

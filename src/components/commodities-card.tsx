@@ -18,7 +18,7 @@ export function CommoditiesCard() {
 
   return (
     <Card className="lg:col-span-3">
-      <CardTitle>Matérias-primas</CardTitle>
+      <CardTitle>Commodities</CardTitle>
       <ul className="mt-3 divide-y divide-border">
         {results.map((r, i) => (
           <li key={COMMODITIES[i]} className="flex items-center justify-between gap-4 py-3">
@@ -31,14 +31,14 @@ export function CommoditiesCard() {
                 <p className="text-lg font-semibold">{formatNumber(r.data.data.price)}</p>
               </>
             ) : r.isError ? (
-              <p role="alert" className="text-sm text-down">{COMMODITIES[i]}: erro ao carregar ({r.error.message})</p>
+              <p role="alert" className="text-sm text-down">{COMMODITIES[i]}: failed to load ({r.error.message})</p>
             ) : (
               <Skeleton className="h-10 w-full" />
             )}
           </li>
         ))}
       </ul>
-      <CardFooter>Futuros · Yahoo Finance (endpoint não oficial)</CardFooter>
+      <CardFooter>Futures · Yahoo Finance (unofficial endpoint)</CardFooter>
     </Card>
   );
 }

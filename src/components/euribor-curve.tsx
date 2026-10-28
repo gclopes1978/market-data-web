@@ -47,14 +47,14 @@ export function EuriborCurve() {
 
   return (
     <Card className="lg:col-span-2">
-      <CardTitle>Curva Euribor</CardTitle>
+      <CardTitle>Euribor curve</CardTitle>
       {failed ? (
-        <p role="alert" className="mt-4 text-sm text-down">Não foi possível carregar a curva ({failed.error?.message}).</p>
+        <p role="alert" className="mt-4 text-sm text-down">Could not load the curve ({failed.error?.message}).</p>
       ) : !ready ? (
         <Skeleton className="mt-4 h-56 w-full" />
       ) : (
         <>
-          <svg viewBox={`0 0 ${W} ${H}`} role="img" className="mt-2 w-full" aria-label="Curva Euribor por prazo">
+          <svg viewBox={`0 0 ${W} ${H}`} role="img" className="mt-2 w-full" aria-label="Euribor curve by tenor">
             <path d={area} fill="var(--primary)" opacity="0.12" />
             <path d={line} fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinejoin="round" />
             {points.map((p, i) => (
@@ -70,7 +70,7 @@ export function EuriborCurve() {
             ))}
           </svg>
           <CardFooter>
-            Média mensal, BCE{asOf ? ` · referente a ${formatDate(asOf)}` : ""}
+            Monthly average, ECB{asOf ? ` · as of ${formatDate(asOf)}` : ""}
           </CardFooter>
         </>
       )}

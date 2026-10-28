@@ -18,8 +18,8 @@ import { StockCard } from "@/components/stock-card";
 /** Badge showing whether the API answers /health (polled every 15s, no retries). */
 function ApiStatus() {
   const { isError, isPending } = useQuery({ queryKey: ["health"], queryFn: api.health, refetchInterval: 15_000, retry: false });
-  if (isPending) return <Badge>A verificar API…</Badge>;
-  return isError ? <Badge variant="down">API indisponível</Badge> : <Badge variant="up">API operacional</Badge>;
+  if (isPending) return <Badge>Checking API…</Badge>;
+  return isError ? <Badge variant="down">API unavailable</Badge> : <Badge variant="up">API operational</Badge>;
 }
 
 /** Dashboard shell: header (status + refresh) and the grid of data cards. */
@@ -33,13 +33,13 @@ export default function App() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Mercados</h1>
-          <p className="text-sm text-muted-foreground">Taxas, câmbio, ações e matérias-primas num só ecrã.</p>
+          <h1 className="text-3xl font-semibold tracking-tight">Markets</h1>
+          <p className="text-sm text-muted-foreground">Rates, currencies, stocks and commodities on one screen.</p>
         </div>
         <div className="flex items-center gap-3">
           <ApiStatus />
           <Button variant="outline" onClick={() => client.invalidateQueries()}>
-            <RefreshCw className={fetching ? "size-4 animate-spin" : "size-4"} /> Atualizar
+            <RefreshCw className={fetching ? "size-4 animate-spin" : "size-4"} /> Refresh
           </Button>
         </div>
       </header>

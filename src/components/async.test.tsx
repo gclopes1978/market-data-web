@@ -28,7 +28,7 @@ describe("Async", () => {
     const fn = vi.fn().mockRejectedValueOnce(new Error("boom")).mockResolvedValueOnce("recovered");
     renderWithClient(<Probe fn={fn} />);
     expect(await screen.findByRole("alert")).toHaveTextContent("boom");
-    await userEvent.click(screen.getByRole("button", { name: "Tentar de novo" }));
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(await screen.findByText("value: recovered")).toBeInTheDocument();
   });
 });
