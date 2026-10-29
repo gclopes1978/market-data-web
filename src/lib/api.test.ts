@@ -42,4 +42,19 @@ describe("api client", () => {
     fetchMock().mockResolvedValueOnce(new Response("Healthy"));
     await expect(api.health()).resolves.toBe("Healthy");
   });
+
+  it("builds the crypto URLs", async () => {
+    await api.cryptoAssets();
+    await api.cryptoAssets("sol", 8);
+    await api.cryptoAssets("bit coin");
+    await api.crypto("btc-bitcoin");
+    await api.crypto("eth-ethereum", "EUR");
+    expect(fetchMock().mock.calls.map((c) => c[0])).toEqual([
+      "/api/crypto",
+      "/api/crypto?q=sol&limit=8",
+      "/api/crypto?q=bit+coin",
+      "/api/crypto/btc-bitcoin?currency=USD",
+      "/api/crypto/eth-ethereum?currency=EUR",
+    ]);
+  });
 });

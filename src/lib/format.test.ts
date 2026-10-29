@@ -1,4 +1,4 @@
-import { formatCompact, formatDate, formatNumber, formatPercent } from "./format";
+import { formatCompact, formatCryptoPrice, formatDate, formatNumber, formatPercent } from "./format";
 
 describe("format", () => {
   it("formats numbers with thousands separators and a decimal point", () => {
@@ -24,5 +24,11 @@ describe("format edge cases", () => {
   });
   it("formats ISO dates in a localized short form", () => {
     expect(formatDate("2026-10-26")).toMatch(/26.*2026/);
+  });
+  it("gives crypto prices enough decimals for their size", () => {
+    expect(formatCryptoPrice(93500.256)).toBe("93,500.26");
+    expect(formatCryptoPrice(1)).toBe("1.00");
+    expect(formatCryptoPrice(0.1234567)).toBe("0.1235");
+    expect(formatCryptoPrice(0.0000125)).toBe("0.00001250");
   });
 });

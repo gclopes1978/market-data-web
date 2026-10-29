@@ -23,3 +23,11 @@ export interface StockSearchResult {
   exchange: string | null;
   exchangeName: string | null;
 }
+
+/** A cryptocurrency listed by the API; `id` (e.g. "btc-bitcoin") is what the quote endpoint expects. rank is null when unranked. */
+export interface CryptoAsset { id: string; name: string; symbol: string; rank: number | null; type: string | null }
+/** Crypto quote in the requested fiat currency; change, volume and market cap may be missing. */
+export interface CryptoQuote {
+  id: string; symbol: string; name: string; price: number; currency: string;
+  changePercent24h: number | null; volume24h: number | null; marketCap: number | null; rank: number | null;
+}

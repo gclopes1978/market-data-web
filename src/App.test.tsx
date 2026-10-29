@@ -15,6 +15,7 @@ const routes: Record<string, unknown> = {
   "/api/euribor/6M": euribor("6M", 2.92),
   "/api/euribor/12M": euribor("12M", 3.25),
   "/api/bonds/US/US10Y": { data: { identifier: "US5Y", market: "US", price: null, currency: "USD", yield: 5.01, maturityDate: null }, metadata: { source: "U.S. Treasury", asOf: "2026-10-01" } },
+  "/api/crypto/btc-bitcoin?currency=USD": { data: { id: "btc-bitcoin", symbol: "BTC", name: "Bitcoin", price: 93500.25, currency: "USD", changePercent24h: -1.37, volume24h: 31000000000, marketCap: 1850000000000, rank: 1 }, metadata: { source: "CoinPaprika", asOf: "2026-10-29" } },
   "/api/stocks/AAPL": { data: { symbol: "AAPL", name: "Apple Inc.", price: 343.045, currency: "USD", changePercent: 1.04, volume: 3600565 }, metadata: { source: "Yahoo", asOf: "2026-10-27" } },
 };
 for (const [s, name, price] of [["GOLD", "Gold futures", 4039.8], ["SILVER", "Silver futures", 53.93], ["WTI", "WTI crude oil futures", 101.3], ["BRENT", "Brent crude oil futures", 110.38], ["NATGAS", "Natural gas futures", 2.972]] as const) {
@@ -45,6 +46,8 @@ describe("Dashboard", () => {
     expect(await screen.findByText("API operational")).toBeInTheDocument();
     expect(await screen.findByText("Apple Inc.")).toBeInTheDocument();
     expect(await screen.findByText("Gold futures")).toBeInTheDocument();
+    expect(await screen.findByText("Bitcoin")).toBeInTheDocument();
+    expect(await screen.findByText("93,500.25")).toBeInTheDocument();
     expect(await screen.findByText("5.01%")).toBeInTheDocument();
     expect(await screen.findByLabelText("Euribor curve by tenor")).toBeInTheDocument();
   });

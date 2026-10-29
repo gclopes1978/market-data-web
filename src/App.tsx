@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BondCard } from "@/components/bond-card";
 import { CommoditiesCard } from "@/components/commodities-card";
+import { CryptoCard } from "@/components/crypto-card";
 import { EuriborCurve } from "@/components/euribor-curve";
 import { FxCard } from "@/components/fx-card";
 import { EquityCard } from "@/components/equity-card";
@@ -34,7 +35,7 @@ export default function App() {
       <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Markets</h1>
-          <p className="text-sm text-muted-foreground">Rates, currencies, stocks and commodities on one screen.</p>
+          <p className="text-sm text-muted-foreground">Rates, currencies, stocks, crypto and commodities on one screen.</p>
         </div>
         <div className="flex items-center gap-3">
           <ApiStatus />
@@ -48,6 +49,7 @@ export default function App() {
         <FxCard />
         <EquityCard />
         <BondCard />
+        <CryptoCard />
         <CommoditiesCard />
       </main>
     </div>

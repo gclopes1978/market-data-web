@@ -2,7 +2,7 @@
 // - In development Vite proxies /api and /health to the API (see vite.config.ts).
 // - In production Nginx does the same (see nginx/default.conf.template).
 // So the frontend never hard-codes a host or port, and the browser never needs CORS.
-import type { Bond, Commodity, Envelope, Euribor, FxRate, Stock, StockSearchResult } from "./types";
+import type { Bond, Commodity, CryptoAsset, CryptoQuote, Envelope, Euribor, FxRate, Stock, StockSearchResult } from "./types";
 
 /** Error thrown when the API answers with a non-2xx status; keeps the HTTP status code. */
 export class ApiError extends Error {
@@ -24,6 +24,8 @@ const getJson = async <T,>(path: string) => (await request(path)).json() as Prom
 // Options offered by the UI: Euribor tenors and commodity symbols (currencies live in currencies.ts).
 export const TENORS = ["1M", "3M", "6M", "12M"] as const;
 export const COMMODITIES = ["GOLD", "SILVER", "WTI", "BRENT", "NATGAS"] as const;
+export const CRYPTO_CURRENCIES = ["USD", "EUR"] as const;
+export type CryptoCurrency = (typeof CRYPTO_CURRENCIES)[number];
 
 /** Typed client for the Market Data API: one method per endpoint. */
 export const api = {
@@ -43,4 +45,15 @@ export const api = {
   etf: (symbol: string) => getJson<Envelope<Stock>>(`/api/etfs/${encodeURIComponent(symbol)}`),
   // GET /api/commodities/{symbol} -> futures price with its unit.
   commodity: (symbol: string) => getJson<Envelope<Commodity>>(`/api/commodities/${symbol}`),
+  // GET /api/crypto?q=&limit= -> active cryptocurrencies by market-cap rank, optionally filtered by name or symbol.
+  cryptoAssets: (query = "", limit?: number) => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (limit) params.set("limit", String(limit));
+    const qs = params.toString();
+    return getJson<Envelope<CryptoAsset[]>>(`/api/crypto${qs ? `?${qs}` : ""}`);
+  },
+  // GET /api/crypto/{id}?currency= -> latest quote; id is the provider id (e.g. btc-bitcoin).
+  crypto: (id: string, currency = "USD") =>
+    getJson<Envelope<CryptoQuote>>(`/api/crypto/${encodeURIComponent(id)}?currency=${currency}`),
 };
