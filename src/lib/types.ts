@@ -16,3 +16,10 @@ export interface Bond {
 export interface Stock { symbol: string; name: string | null; price: number; currency: string; changePercent: number; volume: number }
 /** Commodity futures quote with the unit it is priced in. */
 export interface Commodity { symbol: string; name: string; price: number; currency: string; unit: string }
+/** Stock search result returned by Yahoo Finance; ETFs are excluded by the API. */
+export interface StockSearchResult {
+  symbol: string;
+  name: string;
+  exchange: string | null;
+  exchangeName: string | null;
+}

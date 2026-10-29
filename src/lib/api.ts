@@ -2,7 +2,7 @@
 // - In development Vite proxies /api and /health to the API (see vite.config.ts).
 // - In production Nginx does the same (see nginx/default.conf.template).
 // So the frontend never hard-codes a host or port, and the browser never needs CORS.
-import type { Bond, Commodity, Envelope, Euribor, FxRate, Stock } from "./types";
+import type { Bond, Commodity, Envelope, Euribor, FxRate, Stock, StockSearchResult } from "./types";
 
 /** Error thrown when the API answers with a non-2xx status; keeps the HTTP status code. */
 export class ApiError extends Error {
@@ -37,6 +37,8 @@ export const api = {
   bond: (market: string, id: string) => getJson<Envelope<Bond>>(`/api/bonds/${market}/${id}`),
   // GET /api/stocks/{symbol} -> last price, daily change and volume. Symbol is URL-encoded.
   stock: (symbol: string) => getJson<Envelope<Stock>>(`/api/stocks/${encodeURIComponent(symbol)}`),
+    // GET /api/stocks/search?q={query} -> search stocks by company name or symbol.
+  searchStocks: (query: string) => getJson<StockSearchResult[]>(`/api/stocks/search?q=${encodeURIComponent(query)}`),
   // GET /api/etfs/{symbol} -> same payload as a stock; Yahoo Finance symbols (e.g. SPY, VWCE.DE).
   etf: (symbol: string) => getJson<Envelope<Stock>>(`/api/etfs/${encodeURIComponent(symbol)}`),
   // GET /api/commodities/{symbol} -> futures price with its unit.
