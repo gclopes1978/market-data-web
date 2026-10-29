@@ -64,4 +64,30 @@ describe("EquityCard", () => {
     await userEvent.click(screen.getByRole("button", { name: "ETFs" }));
     expect(screen.getByLabelText("Symbol")).toHaveValue("QQQ");
   });
+
+  it("searches stocks by name and selects a suggestion", async () => {
+    const fetchMock = stubFetch({
+      ...routes,
+      "/api/stocks/search?q=Apple": [
+        {
+          symbol: "AAPL",
+          name: "Apple Inc.",
+          exchange: "NMS",
+          exchangeName: "NASDAQ",
+        },
+      ],
+    });
+
+    renderWithClient(<EquityCard />);
+
+    await screen.findByText("Apple Inc.");
+    await userEvent.clear(screen.getByLabelText("Symbol"));
+    await userEvent.type(screen.getByLabelText("Symbol"), "Apple");
+
+    const suggestion = await screen.findByRole("option", { name: /Apple Inc\..*AAPL/i });
+    await userEvent.click(suggestion);
+
+    expect(screen.getByLabelText("Symbol")).toHaveValue("AAPL");
+    expect(fetchMock).toHaveBeenCalledWith("/api/stocks/search?q=Apple");
+  });
 });
