@@ -15,3 +15,6 @@ export const formatCompact = (n: number) =>
 /** Formats an ISO date (YYYY-MM-DD) as a short localized date. */
 export const formatDate = (iso: string) =>
   new Intl.DateTimeFormat(LOCALE, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(iso));
+
+/** Price with enough decimals for tiny values: >= 1 -> 2 decimals, >= 0.01 -> 4, below -> 8 (e.g. 0.00001250). */
+export const formatCryptoPrice = (n: number) => formatNumber(n, n >= 1 ? 2 : n >= 0.01 ? 4 : 8);
