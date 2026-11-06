@@ -31,3 +31,14 @@ Both checks are required by branch protection on `main`. Run the smoke test loca
 
     docker build -t market-data-web:smoke .
     ./smoke/smoke-test.sh market-data-web:smoke
+
+
+## Azure deployment (Consumption, scale to zero)
+
+The zero-cost target uses Azure Container Apps Consumption in Spain Central. The Docker image remains the deployment unit: the existing CI workflow tests the frontend, builds and smoke-tests the Nginx container, publishes it to GHCR, then optionally updates the Azure Container App.
+
+See [the API repository infrastructure guide](https://github.com/gclopes1978/market-data-api/tree/feature/azure-container-apps-zero-cost/infra) for the Bicep deployment, shared free-grant limits, OIDC setup and cost safeguards.
+
+Required repository Actions secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`.
+
+Required Actions variables: `AZURE_RESOURCE_GROUP=rg-market-data-dev`, `AZURE_CONTAINER_APP_NAME` (the Bicep output), and `AZURE_DEPLOY_ENABLED=true`. Leave deployment disabled until the Azure resources exist and the GHCR package is public.
