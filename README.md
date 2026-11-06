@@ -37,7 +37,7 @@ Both checks are required by branch protection on `main`. Run the smoke test loca
 
 The zero-cost target uses Azure Container Apps Consumption in Spain Central. The Docker image remains the deployment unit: the existing CI workflow tests the frontend, builds and smoke-tests the Nginx container, publishes it to GHCR, then optionally updates the Azure Container App.
 
-See [the API repository infrastructure guide](https://github.com/gclopes1978/market-data-api/tree/main/infra) for the Bicep deployment, shared free-grant limits, OIDC setup and cost safeguards.
+See [the API repository infrastructure guide](https://github.com/gclopes1978/market-data-api/tree/feature/azure-container-apps-zero-cost/infra) for the Bicep deployment, shared free-grant limits, OIDC setup and cost safeguards.
 
 Required repository Actions secrets: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`.
 
