@@ -12,7 +12,7 @@ A responsive market dashboard built with React 19, TypeScript, Vite, Tailwind CS
 
 ## Development
 
-Requires **Node.js 22 or later** and npm. The project has been verified locally with **Node.js 26.13.0** and **npm 11.20.0**. The Docker build and GitHub Actions workflow currently use Node.js 22, so local development and CI do not yet use identical Node.js major versions.
+Requires **Node.js 22 or later** and npm. The project has been verified locally with **Node.js 26.13.0** and **npm 11.20.0**. The installed **React and React DOM versions are 19.3.1**, confirmed with `npm list react`. The Docker build and GitHub Actions workflow currently use Node.js 22, so local development and CI do not yet use identical Node.js major versions.
 
 > **Framework note:** this repository is a React 19 + TypeScript + Vite application. Angular CLI is not used by this project. Having Angular CLI 22.2.5 installed globally (`ng --version`) does not make this application an Angular application; there is no `angular.json` or Angular build configuration in this repository.
 
