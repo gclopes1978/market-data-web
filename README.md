@@ -84,6 +84,6 @@ The workflow uses least-privilege permissions: package write access is scoped to
 
 ## Azure deployment
 
-The target is Azure Container Apps Consumption in Spain Central, with scale-to-zero. The API repository contains the Bicep infrastructure and deployment guide: [market-data-api/infra](https://github.com/gclopes1978/market-data-api/tree/feature/azure-container-apps-zero-cost/infra).
+The application is deployed to Azure Container Apps (Consumption plan) in Spain Central, with scale-to-zero. The API repository contains the Bicep infrastructure and deployment guide: [market-data-api/infra](https://github.com/gclopes1978/market-data-api/tree/main/infra).
 
-Keep `AZURE_DEPLOY_ENABLED` unset or false until the Azure resources, GHCR package visibility, OIDC trust and GitHub Actions configuration are ready. The zero-cost target depends on total subscription consumption staying within the applicable free grants.
+The `deploy` job runs only when `AZURE_DEPLOY_ENABLED=true`, once the Azure resources, GHCR package visibility, OIDC trust and GitHub Actions configuration are in place. The zero-cost target depends on total subscription consumption staying within the applicable free grants.
