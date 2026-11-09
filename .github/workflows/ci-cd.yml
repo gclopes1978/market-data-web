@@ -1,12 +1,11 @@
-# CI/CD pipeline.
+# CI/CD for the Market Dashboard.
 #
-# Two jobs, in order:
-#   1. test   - fast feedback: typecheck, unit tests, production build.
-#   2. docker - builds the real image, smoke-tests the running container, and publishes it
-#               to GHCR only on pushes to main (pull requests build and test but never publish).
+# Execution order:
+#   1. test   - install locked dependencies, typecheck, run unit tests and build the static site.
+#   2. docker - build the production Nginx image, run the container smoke test, then publish on non-PR refs.
+#   3. deploy - optional Azure update after publishing, only from main and only when explicitly enabled.
 #
-# Branch protection on `main` requires BOTH checks (`test` and `docker`), so a PR cannot be merged
-# unless the unit tests pass AND the container actually works.
+# Pull requests validate both source and the runnable image, but never publish or deploy.
 name: CI/CD
 
 on:
@@ -16,12 +15,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# A newer push to the same branch/PR cancels the older run (saves minutes, avoids stale results).
+# Cancel stale work for the same branch/PR to save runner time and avoid publishing superseded commits.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Least privilege by default; the docker job raises it only where needed.
+# Least privilege by default; publishing and OIDC permissions are granted only to their respective jobs.
 permissions:
   contents: read
 
@@ -33,11 +32,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm # caches ~/.npm keyed on package-lock.json
-      - run: npm ci # exact versions from the lockfile
+          cache: npm # caches the npm download directory using package-lock.json
+      # npm ci uses the committed lockfile so CI installs the same dependency graph as local development.
+      - run: npm ci
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # Retain the compiled site briefly for inspection or downstream workflow use.
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -45,19 +46,19 @@ jobs:
           retention-days: 7
 
   docker:
-    needs: test # do not spend time building an image from code whose tests fail
+    needs: test # do not build/publish a container if source checks fail
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # needed to push to ghcr.io with the built-in GITHUB_TOKEN
+      packages: write # needed only when this job pushes to ghcr.io
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4 # the smoke test runs a tiny Node mock of the API on the runner
+      - uses: actions/setup-node@v4 # the smoke test launches a small Node mock API on the runner
         with:
           node-version: 22
       - uses: docker/setup-buildx-action@v3
 
-      # Step 1: build the image locally (not pushed) so it can be smoke-tested first.
+      # Build locally first: load=true makes the image available to docker run without publishing it.
       - name: Build image for smoke test
         uses: docker/build-push-action@v6
         with:
@@ -67,11 +68,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Step 2: run the container against a fake API and probe it with curl (see smoke/smoke-test.sh).
+      # The mock makes the test deterministic and independent of live market-data providers.
       - name: Smoke test
         run: ./smoke/smoke-test.sh market-data-web:smoke
 
-      # Step 3: publish, only after the smoke test passed and only from main.
+      # GHCR login is skipped for PRs; secrets are not needed to validate an untrusted PR build.
       - name: Log in to GHCR
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -94,17 +95,17 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha # reuses the layers built in step 1, so this is fast
-
+          cache-from: type=gha # reuses the layers built in the smoke-test build
 
   deploy:
     name: Deploy to Azure Container Apps
     needs: docker
+    # This guard prevents PRs and non-main refs from deploying; the repository variable is an explicit opt-in.
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.AZURE_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write # GitHub OIDC token used by azure/login; no long-lived Azure client secret
     steps:
       - name: Azure login with GitHub OIDC
         uses: azure/login@v3
